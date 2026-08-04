@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>OPHTRA 術瞳</title>
+<meta name="description" content="OPHTRA 術瞳">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;1,9..144,400;1,9..144,500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#07080a;
+    --bg-2:#0c0e11;
+    --ink:#ece6d8;
+    --ink-dim:rgba(236,230,216,0.56);
+    --ink-faint:rgba(236,230,216,0.30);
+    --gold:#c6a15b;
+    --gold-bright:#e8cd8f;
+    --hairline:rgba(236,230,216,0.12);
+    --hairline-strong:rgba(236,230,216,0.24);
+    --serif:'Fraunces', Georgia, serif;
+  }
+  *{ box-sizing:border-box; margin:0; padding:0; }
+  html{ scroll-behavior:smooth; }
+  body{
+    background:var(--bg);
+    color:var(--ink);
+    font-family:var(--serif);
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  :focus-visible{ outline:1px solid var(--gold); outline-offset:4px; }
+
+  .grain{
+    position:fixed; inset:0; z-index:-1;
+    background:
+      radial-gradient(ellipse 1000px 700px at 50% 0%, rgba(198,161,91,0.07), transparent 60%),
+      var(--bg);
+  }
+
+  /* ---------- mark (fixed corner) ---------- */
+  .mark{
+    position:fixed;
+    top:36px; left:36px;
+    z-index:30;
+    font-size:14px;
+    letter-spacing:0.18em;
+    color:var(--ink-dim);
+    mix-blend-mode:difference;
+  }
+  @media (max-width:640px){ .mark{ top:24px; left:24px; font-size:12px; } }
+
+  .scroll-cue{
+    position:fixed;
+    bottom:36px; left:50%;
+    transform:translateX(-50%);
+    z-index:30;
+    display:flex; flex-direction:column; align-items:center; gap:10px;
+    font-size:11px;
+    letter-spacing:0.24em;
+    color:var(--ink-faint);
+    opacity:0;
+    animation:fadein 1.2s ease 1.4s forwards;
+  }
+  .scroll-cue .line{ width:1px; height:34px; background:linear-gradient(var(--gold), transparent); animation:pulse 2.4s ease-in-out infinite; }
+  @keyframes fadein{ to{ opacity:1; } }
+  @keyframes pulse{ 0%,100%{ opacity:0.35; } 50%{ opacity:1; } }
+  @media (max-width:640px){ .scroll-cue{ display:none; } }
+
+  /* ---------- hero ---------- */
+  .hero{
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    padding:120px 24px 80px;
+    position:relative;
+  }
+
+  .eyebrow{
+    font-size:11.5px;
+    letter-spacing:0.32em;
+    color:var(--gold);
+    text-transform:uppercase;
+    margin-bottom:56px;
+    opacity:0;
+    animation:rise 1s ease 0.1s forwards;
+  }
+
+  .iris-hero{
+    width:min(72vw, 460px);
+    aspect-ratio:1/1;
+    margin-bottom:16px;
+    opacity:0;
+    animation:rise 1.3s ease 0.3s forwards;
+  }
+  .iris-hero svg{ width:100%; height:100%; overflow:visible; }
+  .ring-slow{ transform-origin:200px 200px; animation:spin 200s linear infinite; }
+  .ring-slow-rev{ transform-origin:200px 200px; animation:spin-rev 260s linear infinite; }
+  @keyframes spin{ to{ transform:rotate(360deg); } }
+  @keyframes spin-rev{ to{ transform:rotate(-360deg); } }
+  @keyframes rise{ from{ opacity:0; transform:translateY(14px); } to{ opacity:1; transform:translateY(0); } }
+  @media (prefers-reduced-motion:reduce){
+    .ring-slow, .ring-slow-rev{ animation:none; }
+    .eyebrow, .iris-hero, .word, .tagline{ animation:none !important; opacity:1 !important; transform:none !important; }
+  }
+
+  .word{
+    font-weight:500;
+    font-size:clamp(44px, 9vw, 92px);
+    letter-spacing:0.02em;
+    line-height:1;
+    margin-top:8px;
+    opacity:0;
+    animation:rise 1.2s ease 0.6s forwards;
+  }
+  .word .zh{
+    display:block;
+    font-weight:300;
+    font-size:0.32em;
+    letter-spacing:0.42em;
+    color:var(--ink-dim);
+    margin-top:22px;
+  }
+
+  .tagline{
+    margin-top:44px;
+    font-style:italic;
+    font-weight:400;
+    font-size:clamp(16px, 2vw, 20px);
+    color:var(--ink-dim);
+    opacity:0;
+    animation:rise 1.2s ease 0.9s forwards;
+  }
+
+  /* ---------- statement sections ---------- */
+  .statement{
+    min-height:78vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    padding:100px 24px;
+    border-top:1px solid var(--hairline);
+    position:relative;
+  }
+  .statement .rule{
+    width:1px; height:64px;
+    background:linear-gradient(var(--gold), transparent);
+    margin:0 auto 44px;
+  }
+  .statement blockquote{
+    font-style:italic;
+    font-weight:400;
+    font-size:clamp(26px, 4.4vw, 46px);
+    line-height:1.5;
+    max-width:16ch;
+    margin:0 auto;
+  }
+  .statement .cap{
+    margin-top:38px;
+    font-style:normal;
+    font-size:11px;
+    letter-spacing:0.28em;
+    color:var(--ink-faint);
+    text-transform:uppercase;
+  }
+
+  /* ---------- detail / split ---------- */
+  .detail{
+    border-top:1px solid var(--hairline);
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    min-height:82vh;
+  }
+  @media (max-width:860px){ .detail{ grid-template-columns:1fr; min-height:auto; } }
+
+  .detail-visual{
+    background:var(--bg-2);
+    display:flex; align-items:center; justify-content:center;
+    padding:64px;
+    position:relative;
+    overflow:hidden;
+  }
+  .detail-visual svg{ width:min(100%, 380px); }
+  @media (max-width:860px){ .detail-visual{ padding:80px 24px; } }
+
+  .detail-text{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    padding:80px 48px;
+  }
+  @media (max-width:860px){ .detail-text{ padding:64px 24px 96px; } }
+
+  .detail-text p{
+    font-style:italic;
+    font-size:clamp(20px, 2.6vw, 28px);
+    line-height:1.6;
+    max-width:14ch;
+    color:var(--ink);
+  }
+  .detail-text .cap{
+    margin-top:30px;
+    font-style:normal;
+    font-size:11px;
+    letter-spacing:0.28em;
+    color:var(--ink-faint);
+    text-transform:uppercase;
+  }
+
+  /* ---------- footer ---------- */
+  footer{
+    border-top:1px solid var(--hairline);
+    padding:120px 24px 72px;
+    text-align:center;
+  }
+  .footer-word{
+    font-size:clamp(48px, 12vw, 140px);
+    font-weight:300;
+    letter-spacing:0.02em;
+    color:var(--ink);
+    opacity:0.92;
+    line-height:1;
+  }
+  .footer-sub{
+    margin-top:26px;
+    font-size:12px;
+    letter-spacing:0.24em;
+    color:var(--ink-faint);
+    text-transform:uppercase;
+  }
+  .footer-year{
+    margin-top:64px;
+    font-size:11px;
+    letter-spacing:0.2em;
+    color:var(--ink-faint);
+    opacity:0.6;
+  }
+</style>
+</head>
+<body>
+
+<div class="grain"></div>
+<div class="mark">術瞳</div>
+
+<header class="hero">
+  <div class="eyebrow">Ophthalmic Surgical Vision</div>
+
+  <div class="iris-hero" aria-hidden="true">
+    <svg viewBox="0 0 400 400">
+      <defs>
+        <radialGradient id="pupil" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stop-color="#f3dca8"/>
+          <stop offset="55%" stop-color="#c6a15b"/>
+          <stop offset="100%" stop-color="#493719"/>
+        </radialGradient>
+      </defs>
+
+      <g class="ring-slow">
+        <circle cx="200" cy="200" r="196" fill="none" stroke="rgba(236,230,216,0.14)" stroke-width="0.75"/>
+        <g stroke="rgba(198,161,91,0.55)" stroke-width="0.75">
+          <line x1="200" y1="4" x2="200" y2="16"/>
+          <line x1="200" y1="384" x2="200" y2="396"/>
+          <line x1="4" y1="200" x2="16" y2="200"/>
+          <line x1="384" y1="200" x2="396" y2="200"/>
+          <line x1="61" y1="61" x2="70" y2="70"/>
+          <line x1="330" y1="61" x2="339" y2="70"/>
+          <line x1="61" y1="339" x2="70" y2="330"/>
+          <line x1="330" y1="339" x2="339" y2="330"/>
+        </g>
+      </g>
+
+      <circle cx="200" cy="200" r="164" fill="none" stroke="rgba(236,230,216,0.09)" stroke-width="0.5"/>
+
+      <g class="ring-slow-rev">
+        <circle cx="200" cy="200" r="128" fill="none" stroke="rgba(198,161,91,0.30)" stroke-width="0.75" stroke-dasharray="1 7"/>
+      </g>
+
+      <circle cx="200" cy="200" r="92" fill="none" stroke="rgba(236,230,216,0.16)" stroke-width="0.75"/>
+
+      <circle cx="200" cy="200" r="52" fill="url(#pupil)" style="filter:drop-shadow(0 0 30px rgba(198,161,91,0.35))"/>
+      <circle cx="182" cy="182" r="7" fill="rgba(255,255,255,0.5)"/>
+    </svg>
+  </div>
+
+  <h1 class="word">OPHTRA<span class="zh">術瞳</span></h1>
+  <p class="tagline">毫釐之間，看見手術的全部語言。</p>
+</header>
+
+<section class="statement">
+  <div>
+    <div class="rule"></div>
+    <blockquote>每一次對焦，<br>都是一次理解。</blockquote>
+    <div class="cap">OPHTRA — 術瞳</div>
+  </div>
+</section>
+
+<section class="detail">
+  <div class="detail-visual">
+    <svg viewBox="0 0 300 300" aria-hidden="true">
+      <g stroke="rgba(198,161,91,0.5)" stroke-width="0.5" fill="none">
+        <circle cx="150" cy="150" r="140"/>
+        <circle cx="150" cy="150" r="100"/>
+        <circle cx="150" cy="150" r="60"/>
+      </g>
+      <g stroke="rgba(236,230,216,0.18)" stroke-width="0.4">
+        <line x1="150" y1="10" x2="150" y2="290"/>
+        <line x1="10" y1="150" x2="290" y2="150"/>
+        <line x1="45" y1="45" x2="255" y2="255"/>
+        <line x1="255" y1="45" x2="45" y2="255"/>
+      </g>
+      <circle cx="150" cy="150" r="30" fill="url(#pupil)" style="filter:drop-shadow(0 0 24px rgba(198,161,91,0.3))"/>
+    </svg>
+  </div>
+  <div class="detail-text">
+    <p>在虹膜的紋理裡，<br>藏著手術的節奏。</p>
+    <div class="cap">術瞳</div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-word">術瞳</div>
+  <div class="footer-sub">OPHTRA</div>
+  <div class="footer-year">© 2026</div>
+</footer>
+
+</body>
+</html>
